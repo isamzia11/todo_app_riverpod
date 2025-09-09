@@ -7,12 +7,23 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final item = ref.watch(itemProvider);
     return Scaffold(
-      body: Column(children: []),
+      body:
+          item.isEmpty
+              ? Center(child: Text('No Data Found'))
+              : ListView.builder(
+                itemCount: item.length,
+                itemBuilder: (context, index) {
+                  final itemDetail = item[index];
+                  return ListTile(title: Text(itemDetail.name));
+                },
+              ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ref.read(itemProvider.notifier).addItem('New Item');
         },
+        child: Icon(Icons.add),
       ),
     );
   }
