@@ -26,4 +26,32 @@ class FavouriteNotifier extends StateNotifier<FavouriteStates> {
       filteredItems: item.toList(),
     );
   }
+
+  void filterList(String search) {
+    state = state.copyWith(filteredItems: _filterItems(state.allItems, search));
+  }
+
+  void favourite(String option) {
+    state = state.copyWith(
+      filteredItems: _favouriteItems(state.allItems, option),
+    );
+  }
+
+  List<Item> _filterItems(List<Item> items, String search) {
+    if (search.isEmpty) {
+      return items;
+    }
+
+    return items
+        .where((item) => item.name.toLowerCase().contains(search.toLowerCase()))
+        .toList();
+  }
+
+  List<Item> _favouriteItems(List<Item> items, String option) {
+    if (option == 'All') {
+      return items;
+    }
+
+    return items.where((item) => item.favourite == true).toList();
+  }
 }

@@ -8,10 +8,50 @@ class HomeScreen3 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favouriteList = ref.watch(favouriteProvider);
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(children: [
-
+      appBar: AppBar(
+        title: Text('Favourite App'),
+        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              ref.read(favouriteProvider.notifier).favourite(value);
+            },
+            itemBuilder: (BuildContext context) {
+              return const [
+                PopupMenuItem(value: 'All', child: Text('All')),
+                PopupMenuItem(value: 'Favourite', child: Text('Favourite')),
+              ];
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Search',
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              ref.read(favouriteProvider.notifier).filterList(value);
+            },
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: favouriteList.filteredItems.length,
+              itemBuilder: (context, index) {
+                final item = favouriteList.filteredItems[index];
+                return ListTile(
+                  title: Text(item.name),
+                  trailing: Icon(
+                    item.favourite ? Icons.favorite : Icons.favorite_border,
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
